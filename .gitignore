@@ -1,0 +1,16 @@
+build/
+JUCE/
+*.o
+*.tmp
+dist/ESXiminator.exe
+dist/ESXiminator-debug.exe
+dist/ESXiminator.vst3/
+dist/*.zip
+dist/*.msi
+dist/_stage/
+.git.bak/
+Hub/bin/
+Hub/obj/
+build_sandbox.wsl.sh
+*.wixpdb
+.wix/

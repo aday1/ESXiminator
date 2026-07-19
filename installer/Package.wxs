@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <!-- UpgradeCode is stable across releases; change Version only. -->
+  <Package Name="ESXiminator"
+           Language="1033"
+           Version="$(var.ProductVersion)"
+           Manufacturer="Aday"
+           UpgradeCode="728DF4B6-BEA2-467F-BC74-03F97170733B"
+           Scope="perMachine"
+           Compressed="yes">
+
+    <SummaryInformation Description="ESXiminator — Korg Electribe ESX-1 remote control (VST3 + standalone + Hub)"
+                        Manufacturer="Aday" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of ESXiminator is already installed. Remove it first if you need to go back."
+                  Schedule="afterInstallInitialize" />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Property Id="ARPHELPLINK" Value="https://aday1.github.io/ESXiminator/" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/aday1/ESXiminator" />
+
+    <!-- Default VST3 parent folder; next dialog can change this. -->
+    <Property Id="VSTINSTALLDIR" Secure="yes" />
+    <SetDirectory Id="VSTINSTALLDIR" Value="[CommonFiles64Folder]VST3" Sequence="first" />
+
+    <!-- WixUI uses this for the Hub/standalone Program Files page -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- Program Files\ESXiminator (+ payload VST next to Hub for repair/reinstall) -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="ESXiminator">
+        <Directory Id="PAYLOAD_VSTBUNDLE" Name="ESXiminator.vst3">
+          <Directory Id="PAYLOAD_CONTENTS" Name="Contents">
+            <Directory Id="PAYLOAD_ARCH" Name="x86_64-win" />
+            <Directory Id="PAYLOAD_RES" Name="Resources" />
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!-- User-chosen VST3 folder (default: Common Files\VST3) -->
+    <StandardDirectory Id="TARGETDIR">
+      <Directory Id="VSTINSTALLDIR" Name="VST3">
+        <Directory Id="VST3BUNDLE" Name="ESXiminator.vst3">
+          <Directory Id="VST3CONTENTS" Name="Contents">
+            <Directory Id="VST3ARCH" Name="x86_64-win" />
+            <Directory Id="VST3RESOURCES" Name="Resources" />
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppMenuFolder" Name="ESXiminator" />
+    </StandardDirectory>
+
+    <Feature Id="Complete" Title="ESXiminator" Description="Hub, standalone app, and VST3 plugin" Level="1"
+             ConfigurableDirectory="INSTALLFOLDER" AllowAbsent="no">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="VstFiles" />
+      <ComponentGroupRef Id="Shortcuts" />
+    </Feature>
+
+    <UIRef Id="WixUI_ESXiminator_X64" />
+    <WixVariable Id="WixUILicenseRtf" Value="installer\License.rtf" />
+
+    <UI>
+      <!-- Dedicated VST3 page — which folder your DAW scans -->
+      <Dialog Id="VstDirDlg" Width="370" Height="270" Title="ESXiminator Setup — VST3 plugin folder">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="373" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="340" Height="15" Transparent="yes" NoPrefix="yes"
+                 Text="{\WixUI_Font_Title}Which VST3 folder should the plugin land in?" />
+        <Control Id="Description" Type="Text" X="25" Y="50" Width="320" Height="42" Transparent="yes" NoPrefix="yes"
+                 Text="This is your DAW's VST3 scan folder — not the Hub/Program Files path from the previous page. Setup creates ESXiminator.vst3 inside the folder you pick." />
+        <Control Id="FolderLabel" Type="Text" X="25" Y="100" Width="320" Height="18" Transparent="yes" NoPrefix="yes"
+                 Text="VST3 plugin folder:" />
+        <Control Id="Folder" Type="PathEdit" X="25" Y="120" Width="250" Height="18" Property="VSTINSTALLDIR" />
+        <Control Id="Browse" Type="PushButton" X="280" Y="118" Width="65" Height="22" Text="Browse...">
+          <Publish Property="_BrowseProperty" Value="VSTINSTALLDIR" Order="1" />
+          <Publish Event="SpawnDialog" Value="BrowseDlg" Order="2" />
+        </Control>
+        <Control Id="Hint" Type="Text" X="25" Y="150" Width="320" Height="40" Transparent="yes" NoPrefix="yes"
+                 Text="Default: C:\Program Files\Common Files\VST3\ESXiminator.vst3" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+          <Publish Event="NewDialog" Value="InstallDirDlg" />
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+          <Publish Event="SetTargetPath" Value="VSTINSTALLDIR" Order="1" />
+          <Publish Event="NewDialog" Value="VerifyReadyDlg" Order="2" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg" />
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+      </Dialog>
+    </UI>
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="CompHub" Guid="D1F51188-74DF-4A2C-94D6-7424068E43E3">
+        <File Id="HubExeFile" Source="!(bindpath.app)\ESXiminator-Hub.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CompHubConfig" Guid="A3C8E2F1-9B4D-4E6A-8C1F-2D7E5B0A9F34">
+        <File Id="HubConfigFile" Source="!(bindpath.app)\ESXiminator-Hub.exe.config" KeyPath="yes" />
+      </Component>
+      <Component Id="CompStandalone" Guid="92E92D8D-798B-494A-A9E1-F5B388947E36">
+        <File Id="StandaloneExeFile" Source="!(bindpath.app)\ESXiminator.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CompGettingStarted" Guid="B4D91A07-6E2C-4F5B-9A80-1C3D4E5F6071">
+        <File Id="GettingStartedFile" Source="!(bindpath.app)\GETTING_STARTED.md" KeyPath="yes" />
+      </Component>
+      <Component Id="CompVersion" Guid="C5E02B18-7F3D-406C-AB91-2D4E5F607182">
+        <File Id="VersionFile" Source="!(bindpath.app)\version.txt" KeyPath="yes" />
+      </Component>
+      <Component Id="CompReadme" Guid="D6F13C29-804E-417D-BC02-3E5F60718293">
+        <File Id="ReadmeFile" Source="!(bindpath.app)\README.md" KeyPath="yes" />
+      </Component>
+      <Component Id="CompPayloadVstBinary" Directory="PAYLOAD_ARCH" Guid="1A2B3C4D-5E6F-7081-92A3-B4C5D6E7F809">
+        <File Id="PayloadVstBinaryFile" Source="!(bindpath.vst)\Contents\x86_64-win\ESXiminator.vst3" KeyPath="yes" />
+      </Component>
+      <Component Id="CompPayloadVstModuleInfo" Directory="PAYLOAD_RES" Guid="2B3C4D5E-6F70-8192-A3B4-C5D6E7F8091A">
+        <File Id="PayloadVstModuleInfoFile" Source="!(bindpath.vst)\Contents\Resources\moduleinfo.json" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="VstFiles">
+      <Component Id="CompVstBinary" Directory="VST3ARCH" Guid="E7024D3A-915F-428E-CD13-4F6071829304">
+        <File Id="VstBinaryFile" Source="!(bindpath.vst)\Contents\x86_64-win\ESXiminator.vst3" KeyPath="yes" />
+      </Component>
+      <Component Id="CompVstModuleInfo" Directory="VST3RESOURCES" Guid="F8135E4B-A260-439F-DE24-506071829405">
+        <File Id="VstModuleInfoFile" Source="!(bindpath.vst)\Contents\Resources\moduleinfo.json" KeyPath="yes" />
+      </Component>
+      <Component Id="CompVstPathReg" Directory="INSTALLFOLDER" Guid="3C4D5E6F-7081-92A3-B4C5-D6E7F8091A2B">
+        <RegistryValue Root="HKLM" Key="Software\Aday\ESXiminator" Name="VstInstallDir" Type="string" Value="[VSTINSTALLDIR]" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="Shortcuts" Directory="AppMenuFolder">
+      <Component Id="CompMenuShortcuts" Guid="09146F5C-B371-44A0-EF35-617182930A16">
+        <Shortcut Id="ShortcutHub"
+                  Name="ESXiminator Hub"
+                  Description="Setup, launch, and update ESXiminator"
+                  Target="[INSTALLFOLDER]ESXiminator-Hub.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <Shortcut Id="ShortcutStandalone"
+                  Name="ESXiminator"
+                  Description="ESX-1 remote control (standalone)"
+                  Target="[INSTALLFOLDER]ESXiminator.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveAppMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Aday\ESXiminator" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+  </Package>
+</Wix>

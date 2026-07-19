@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ESXiminator.Hub</RootNamespace>
+    <AssemblyName>ESXiminator-Hub</AssemblyName>
+    <ApplicationIcon></ApplicationIcon>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Version>2.0.3</Version>
+    <Product>ESXiminator Hub</Product>
+    <Company>Aday</Company>
+    <Description>Setup, launch, and update ESXiminator</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+</Project>

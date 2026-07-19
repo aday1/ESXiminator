@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  <!-- Make the Program Files page loud that it is NOT the VST path -->
+  <String Id="InstallDirDlg_Title" Value="ESXiminator Setup — Hub location" />
+  <String Id="InstallDirDlgTitle" Value="{\WixUI_Font_Title}Hub &amp; standalone (not the VST)" />
+  <String Id="InstallDirDlgDescription" Value="Program Files folder for Hub + standalone .exe only. Next page asks which VST3 folder to use." />
+  <String Id="InstallDirDlgFolderLabel" Value="Install Hub / standalone to:" />
+</WixLocalization>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESXiminator — drive your Korg ESX-1 without a front panel</title>
+<style>
+  :root { --red:#8f1a12; --red-dk:#5c0e09; --led:#ff5533; --amber:#ffb14a;
+          --panel:#232022; --panel-hi:#37322f; --metal:#b9b4ae; --text:#e8e2d8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:linear-gradient(180deg, var(--red-dk) 0%, #421008 18%, var(--panel) 60%);
+         color:var(--text); font-family:"Segoe UI", system-ui, sans-serif; min-height:100vh; }
+  .metal { background:linear-gradient(180deg,#d8d4cd,#8d8880); color:var(--red-dk);
+           padding:14px 6vw; display:flex; align-items:baseline; gap:16px;
+           border-bottom:3px solid #000a; }
+  .metal h1 { font-style:italic; font-weight:800; font-size:2rem; letter-spacing:-1px; }
+  .metal span { font-size:.8rem; font-weight:700; color:#3a3632; letter-spacing:2px; }
+  main { max-width:960px; margin:0 auto; padding:40px 24px 80px; }
+  .hero { text-align:center; margin-bottom:48px; }
+  .hero h2 { font-size:2.4rem; line-height:1.15; margin-bottom:14px; }
+  .hero h2 em { color:var(--led); font-style:normal; }
+  .hero p { color:#cfc8bd; max-width:640px; margin:0 auto 26px; font-size:1.05rem; }
+  .btn { display:inline-block; background:var(--red); color:#fff; font-weight:700;
+         padding:14px 28px; border-radius:8px; text-decoration:none; margin:6px;
+         border:1px solid #0006; box-shadow:0 4px 14px #0007, inset 0 1px 0 #fff3; }
+  .btn:hover { background:#a92418; }
+  .btn.alt { background:var(--panel-hi); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px; margin:40px 0; }
+  .card { background:#2b272880; border:1px solid #0008; border-radius:10px; padding:20px;
+          box-shadow:0 2px 10px #0006; }
+  .card h3 { color:var(--amber); font-size:1.02rem; margin-bottom:8px; letter-spacing:.5px; }
+  .card h3::before { content:"●"; color:var(--led); margin-right:8px; text-shadow:0 0 8px var(--led); }
+  .card p { font-size:.92rem; color:#cfc8bd; line-height:1.5; }
+  .seq { display:grid; grid-template-columns:repeat(16,1fr); gap:5px; margin:34px auto; max-width:680px; }
+  .seq i { aspect-ratio:1; border-radius:4px; background:var(--panel-hi); border:1px solid #000a; }
+  .seq i.on { background:var(--led); box-shadow:0 0 10px #ff553388; }
+  .strip { text-align:center; margin-top:52px; color:#9d968a; font-size:.85rem; line-height:1.7; }
+  .strip code { background:#0005; padding:2px 7px; border-radius:4px; color:var(--amber); }
+  a { color:var(--amber); }
+</style>
+</head>
+<body>
+<header class="metal"><h1>ESXiminator</h1><span>ELECTRIBE&nbsp;SX&nbsp;REMOTE&nbsp;CONTROL</span></header>
+<main>
+  <section class="hero">
+    <h2>Your ESX-1's front panel died.<br><em>Its brain didn't.</em></h2>
+    <p>ESXiminator is a free Windows VST3 + standalone app by Aday that becomes the front panel of a
+       Korg Electribe ESX-1 — every part, every knob, every effect, over plain USB-MIDI.
+       Optional beer license. Not affiliated with Korg.</p>
+    <a class="btn" href="https://github.com/aday1/ESXiminator/releases/latest/download/ESXiminator-v2.0.3-Setup.msi">Download MSI installer</a>
+    <a class="btn alt" href="https://github.com/aday1/ESXiminator/releases/latest/download/ESXiminator-v2.0.3-win64.zip">Portable zip (x64)</a>
+    <a class="btn alt" href="https://github.com/aday1/ESXiminator/blob/main/GETTING_STARTED.md">Getting started</a>
+    <div class="seq" aria-hidden="true">
+      <i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i class="on"></i><i></i>
+      <i class="on"></i><i></i><i></i><i class="on"></i><i class="on"></i><i></i><i></i><i class="on"></i>
+    </div>
+  </section>
+  <section class="grid">
+    <div class="card"><h3>MSI INSTALLER</h3><p>Two folder pages: (1) Hub/standalone under Program Files,
+      (2) <strong>Which VST3 folder should the plugin land in?</strong> — default
+      <code>C:\Program Files\Common Files\VST3\ESXiminator.vst3</code>. Clean uninstall from
+      Apps &amp; Features.</p></div>
+    <div class="card"><h3>HUB APP</h3><p>Status always shows the full VST path. Install VST3 confirms
+      that location (same Common Files default unless you change it). Updates refresh that same folder —
+      one metal-panel window, no command line.</p></div>
+    <div class="card"><h3>EVERY PARAMETER</h3><p>All 15 parts — Drum 1–7B, Stretch, Slice, Audio In, Keys 1/2.
+      Sample &amp; slice select, filter, EG, modulation, FX sends, mutes, accent, swing — addressed per-part
+      via NRPN and panel CCs, exactly per Korg's spec.</p></div>
+    <div class="card"><h3>MODULATORS</h3><p>MOD tab: LFOs and friends that drive any parameter, with safe min/max ranges
+      on knobs so MIDI-learned moves stay inside the limits you set.</p></div>
+    <div class="card"><h3>STEP SEQUENCER</h3><p>16×13 grid that follows your DAW transport or its own
+      internal clock, with MIDI clock/start/stop generation so the hardware stays tempo-locked.</p></div>
+    <div class="card"><h3>FULL DAW AUTOMATION</h3><p>Every control is a VST parameter. Draw automation on anything —
+      it streams to the hardware live. Unlimited motion sequences, courtesy of your DAW.</p></div>
+    <div class="card"><h3>MIDI LEARN</h3><p>Right-click any knob, twist your controller, done.
+      Plus a direct MIDI input so a keyboard can play the Keys parts chromatically.</p></div>
+    <div class="card"><h3>NO DAW REQUIRED</h3><p>Standalone .exe talks straight to your USB-MIDI interface.
+      The VST3 opens its own MIDI port too — Bitwig's plugin-MIDI filtering can't stop it.</p></div>
+  </section>
+  <div class="strip">
+    ESX-1 setup: MIDI Filter <code>P/C/E/N = o</code> · Clock <code>AUTO</code> · CC assign factory defaults ·
+    channels <code>1 / 2 / 10</code><br>
+    by Aday · Optional beer license · Not affiliated with Korg · v2.0.3 ·
+    <a href="https://github.com/aday1/ESXiminator">Source on GitHub</a>
+  </div>
+</main>
+</body>
+</html>
